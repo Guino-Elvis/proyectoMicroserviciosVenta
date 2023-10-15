@@ -58,7 +58,7 @@ public class VentaServiceImpl implements VentaService {
             System.out.println(producto.toString());
             System.out.println(producto.getNombre());
             return ventaDetalle;
-        }).collect(Collectors.toList()); // Utiliser Collectors.toList() ici
+        }).collect(Collectors.toList());
         venta.setDetalle(ventaDetalles);
         venta.setCliente(cliente);
         return Optional.of(venta);
