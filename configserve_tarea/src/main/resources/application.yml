@@ -1,0 +1,19 @@
+server:
+  port: 8085
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/Guino-Elvis/proyectoMicroserviciosVenta.git
+          search-paths: config-data
+          #username: 
+          #password: 
+          default-label: main
+  security:
+    user:
+      name: root
+      password: s3cr3t
+      # holaaasoyservidorciclo6tareaaaaa
