@@ -11,7 +11,6 @@ import jakarta.persistence.Transient;
 
 @Entity
 @Data
-
 public class VentaDetalle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
