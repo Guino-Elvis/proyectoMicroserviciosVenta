@@ -45,7 +45,9 @@ spring:
         - id: categoria-service
           uri: lb://categoria-service
           predicates:
-            - Path=/categoria/**         
+            - Path=/categoria/** 
+          filters:
+            - AuthFilter       
         - id: auth-service
           uri: lb://auth-service
           predicates:
