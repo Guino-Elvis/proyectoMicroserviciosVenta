@@ -83,11 +83,4 @@ public class AuthUserServiceImpl implements AuthUserService {
         return authUserDto.getPassword().equals(authUserDto.getConfirmPassword());
     }
 
-    @Override
-    public AuthUser findUserByEmail(String email) {
-        // Implementa la lógica para buscar un usuario por su correo electrónico.
-        // Debe devolver una instancia de AuthUser o null si no se encuentra.
-        return authRepository.findByEmail(email).orElse(null);
-    }
-
 }

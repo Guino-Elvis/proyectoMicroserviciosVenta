@@ -20,19 +20,6 @@ public class AuthUserController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@RequestBody AuthUserDto authUserDto) {
-        AuthUser authUser = authUserService.findUserByEmail(authUserDto.getEmail());
-
-        if (authUser == null) {
-            // Usuario no existe, devuelve una respuesta personalizada
-            return ResponseEntity.badRequest().body(new TokenDto("Usuario no existe"));
-        }
-
-        // Validar la contraseña proporcionada
-        if (!authUser.getPassword().equals(authUserDto.getPassword())) {
-            // Contraseña incorrecta, devuelve una respuesta personalizada
-            return ResponseEntity.badRequest().body(new TokenDto("Contraseña incorrecta"));
-        }
-
         TokenDto tokenDto = authUserService.login(authUserDto);
         if (tokenDto == null)
             return ResponseEntity.badRequest().build();
@@ -49,12 +36,6 @@ public class AuthUserController {
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody AuthUserDto authUserDto) {
-        // Verificar si ya existe un usuario con el mismo correo electrónico
-        AuthUser existingUser = authUserService.findUserByEmail(authUserDto.getEmail());
-        if (existingUser != null) {
-            return ResponseEntity.badRequest().body("Usuario ya existe.");
-        }
-
         if (!authUserService.isPasswordConfirmed(authUserDto)) {
             return ResponseEntity.badRequest().body("Password and confirm password do not match.");
         }
