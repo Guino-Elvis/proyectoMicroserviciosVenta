@@ -25,5 +25,16 @@ management:
     health:
       show-details: ALWAYS
 
+resilience4j:
+  circuitbreaker:
+    instances:
+      pedidoListarPorIdCB:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: TIME_BASED
+        minimumNumberOfCalls: 4
+        waitDurationInOpenState: 5s
+        #recilencia agregada
 
 
