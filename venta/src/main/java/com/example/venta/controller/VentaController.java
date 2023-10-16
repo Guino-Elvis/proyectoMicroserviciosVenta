@@ -51,14 +51,6 @@ public class VentaController {
     private ResponseEntity<Venta> fallBacklistById(@PathVariable(required = true) Integer id, RuntimeException e) {
         Venta venta = new Venta();
         venta.setId(90000);
-        Cliente cliente = new Cliente();
-        cliente.setNombre("Recurso no disponible del nombre del cliente");
-        cliente.setApellidomaterno("no tiene Apellidomaterno");
-        cliente.setCelular("no tiene Celular");
-        cliente.setDni("no tiene Dni");
-        cliente.setTelefono("no tiene Telefono");
-
-        venta.setCliente(cliente);
         return ResponseEntity.ok().body(venta);
     }
 
