@@ -1,15 +1,19 @@
 import logo from './logo.svg';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import './App.css';
+// import './App.css';
 import CategoriaProds from './pages/CategoriaProds';
-import Virtualbox from './pages/Home';
+import Home from './pages/Home';
+import Login from "./pages/auth/Loogin";
 
 function App() {
   return (
  <Router>
   <div className=''>
      <Routes>
-     <Route path="/" element={<Virtualbox/>} />
+      {/* login */}
+      <Route path="/" element={<Login />} />
+      {/* end login */}
+     <Route path="/dashboard" element={<Home/>} />
      <Route path="/categoria" element={<CategoriaProds />} />
      </Routes>
   </div>

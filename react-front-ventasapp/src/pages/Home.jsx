@@ -4,7 +4,7 @@ import Footer from '../component/admin/Footer';
 import AppLayout from '../component/admin/AppLayout';
 
 
-const Virtualbox = () => {
+const Home = () => {
   return (
     <AppLayout>
  
@@ -826,4 +826,4 @@ const Virtualbox = () => {
   );
 }
 
-export default Virtualbox;
+export default Home;

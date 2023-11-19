@@ -13,7 +13,11 @@ spring:
           corsConfigurations:
             '[/**]':
               allowedOrigins:
-              - "http://localhost:8080"
+              # - "http://localhost:8080"
+              #puerto de react
+              - "http://localhost:3000"
+              #puerto de laravel
+              - "http://localhost:8000"
               allowedHeaders: "*"
               allowedMethods:
                 - GET
