@@ -1,19 +1,21 @@
 import axios from "axios";
-import ExcelJS from 'exceljs';
-
 import { useState, useEffect } from "react";
-import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import Modal from "../component/Modal";
 import AppLayout from "../component/admin/AppLayout";
+import css from '../styles/add.css';
 const CategoriaProds = () => {
+    // token
+    const token = localStorage.getItem("token");
+    // end token
+
   // paginacion
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredCategoriaProds, setFilteredCategoriaProds] = useState([]);
 
-  const [selectedFile, setSelectedFile] = useState(null);
+  
 
   const getCurrentItems = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -54,7 +56,11 @@ const CategoriaProds = () => {
 
   const getCategoriaProds = () => {
     axios
-      .get(`${API_URL}/categoriaProd`)
+      .get(`${API_URL}/categoria`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         const sortedCategoriaProds = response.data.sort();
         setCategoriaProds(sortedCategoriaProds.reverse());
@@ -70,143 +76,6 @@ const CategoriaProds = () => {
         console.log(error);
       });
   }
-
-  const exportToExcel = (data) => {
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Alumnos');
-
-    // Establecer estilo para las columnas separadas
-    worksheet.columns = [
-      { width: 3 }, // Columna A
-      { width: 20 }, // Columna B
-      { width: 15 }, // Columna C
-      { width: 25 }, // Columna D
-      { width: 25 }, // Columna E
-      { width: 80 }, // Columna F
-
-    ];
-
-    // Establecer estilo para los encabezados
-    const headerStyle = {
-      fill: {
-        type: 'pattern',
-        pattern: 'solid',
-        fgColor: { argb: '000080' }, // Color de fondo negro
-      },
-      font: {
-        color: { argb: 'FFFFFF' }, // Color de texto blanco
-        bold: true, // Negrita
-      },
-    };
-
-    // Añadir los encabezados a la hoja de cálculo con el estilo
-    const headers = ['ID', 'Titulo', 'Descripccion', 'Creado', 'Actualizado'];
-    const headerRow = worksheet.addRow(headers);
-    headerRow.eachCell((cell) => {
-      cell.fill = headerStyle.fill;
-      cell.font = headerStyle.font;
-    });
-
-    // Añadir los datos a la hoja de cálculo
-    data.forEach((categoriaProd, index) => {
-      const row = worksheet.addRow(Object.values(categoriaProd));
-      const isEvenRow = index % 2 === 0;
-
-      // Establecer el estilo de la fila
-      const rowStyle = {
-        fill: {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: isEvenRow ? 'CCE0FF' : 'DCDCDC' }, // Color celeste(1) o grisclaro(2) intercalado
-        },
-      };
-      row.eachCell((cell) => {
-        cell.fill = rowStyle.fill;
-      });
-    });
-
-    // Guardar el archivo Excel
-    workbook.xlsx.writeBuffer().then((buffer) => {
-      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      const filename = 'categoriaProds.xlsx';
-
-      // Descargar el archivo Excel
-      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        // Para Internet Explorer
-        window.navigator.msSaveOrOpenBlob(blob, filename);
-      } else {
-        // Para otros navegadores
-        const url = window.URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = filename;
-        link.click();
-        window.URL.revokeObjectURL(url);
-      }
-    });
-  };
-
-
-
-
-
-
-
-
-
-
-  const generarPDF = () => {
-    const doc = new jsPDF();
-
-    // Crear los encabezados de las columnas
-    const headers = ['ID', 'Titulo', 'Descripccion', 'Creado', 'Actualizado'];
-
-    // Obtener los datos de los categoriaProds en un formato de tabla
-    const data = categoriaProds.map((categoriaProd) => [
-      categoriaProd.id,
-      categoriaProd.titulo,
-      categoriaProd.descripccion,
-      categoriaProd.created_at,
-      categoriaProd.updated_at,
-    ]);
-
-    // Establecer los estilos de la tabla
-    const tableStyles = {
-      startY: 20,
-      headStyles: {
-        fillColor: '#FFA500', // Naranja claro
-        textColor: '#FFFFFF', // Texto blanco
-        fontStyle: 'bold', // Texto en negrita
-      },
-      bodyStyles: {
-        textColor: '#444',
-      },
-      alternateRowStyles: {
-        fillColor: '#f5f5f5',
-      },
-    };
-
-    // Generar la tabla utilizando autoTable
-    doc.autoTable({
-      head: [headers],
-      body: data,
-      ...tableStyles,
-    });
-
-    // Guardar el PDF
-    doc.save('categoriaProds.pdf');
-  };
-
-
-
-
-
-
-
-
-
-
-
 
 
   const editarCategoriaProd = (id) => {
@@ -246,7 +115,11 @@ const CategoriaProds = () => {
 
 
       axios
-        .post(`${API_URL}/categoriaProd`, nuevoCategoriaProd)
+        .post(`${API_URL}/categoria`, nuevoCategoriaProd,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
         .then((response) => {
           setCategoriaProdEditado({
             id: null,
@@ -286,8 +159,12 @@ const CategoriaProds = () => {
 
       // Realizar la solicitud PUT para actualizar el categoriaProd
       const response = await axios.put(
-        `${API_URL}/categoriaProd`,
-        categoriaProdActualizado
+        `${API_URL}/categoria`,
+        categoriaProdActualizado,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
 
       // Actualizar la lista de categoriaProds
@@ -310,7 +187,11 @@ const CategoriaProds = () => {
   const eliminarCategoriaProd = async (id) => {
     try {
       // Realizar la solicitud DELETE para eliminar el categoriaProd
-      const response = await axios.delete(`${API_URL}/categoriaProd/${id}`);
+      const response = await axios.delete(`${API_URL}/categoria/${id}`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       // Actualizar la lista de categoriaProds
       getCategoriaProds();
@@ -337,8 +218,8 @@ const CategoriaProds = () => {
       <h2 className="text-2xl font-bold text-center">{categoriaProdEditado.id ? 'Editar CategoriaProd' : 'Crear CategoriaProd'}</h2>
       <form onSubmit={categoriaProdEditado.id ? actualizarCategoriaProd : crearCategoriaProd}>
         <div className="mt-4">
-          <div className="flex">
-            <div>
+          <div className="flex flex-wrap">
+            <div className="w-full">
               <label className="block">Titulo</label>
               <input
                 value={categoriaProdEditado.titulo}
@@ -354,7 +235,7 @@ const CategoriaProds = () => {
               />
             </div>
 
-            <div className="ml-1">
+            <div className="ml-1 w-full">
               <label className="block">Nombre</label>
               <input
                 value={categoriaProdEditado.nombre}
@@ -369,7 +250,7 @@ const CategoriaProds = () => {
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
               />
             </div>
-            <div className="ml-1">
+            <div className="ml-1 w-full">
               <label className="block">Descripcion</label>
               <input
                 value={categoriaProdEditado.descripccion}
@@ -384,7 +265,7 @@ const CategoriaProds = () => {
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
               />
             </div>
-            <div className="ml-1">
+            <div className="ml-1 w-full">
               <label className="block">Modelo</label>
               <input
                 value={categoriaProdEditado.modelo}
@@ -399,7 +280,7 @@ const CategoriaProds = () => {
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
               />
             </div>
-            <div className="ml-1">
+            <div className="ml-1 w-full">
               <label className="block">Marca</label>
               <input
                 value={categoriaProdEditado.marca}
@@ -463,20 +344,7 @@ const CategoriaProds = () => {
                   <nav class=" flex flex-wrap items-center justify-between px-0 py-2 mx-6 transition-all shadow-none duration-250 ease-soft-in rounded-2xl lg:flex-nowrap lg:justify-start" >
                     <div class="flex  items-center justify-between w-full px-4 py-1 mx-auto flex-wrap-inherit ">
                       <nav className=" flex ">
-                        <div class="mb-0 font-bold capitalize m-2 ">
-                          <button onClick={generarPDF} className="text-red-700 w-10"  >
-                            <div className="hidden">pdf</div>
-                            <svg role="img" viewBox="0 0 24 24" fill="red" xmlns="http://www.w3.org/2000/svg"><path d="M23.63 15.3c-.71-.745-2.166-1.17-4.224-1.17-1.1 0-2.377.106-3.761.354a19.443 19.443 0 0 1-2.307-2.661c-.532-.71-.994-1.49-1.42-2.236.817-2.484 1.207-4.507 1.207-5.962 0-1.632-.603-3.336-2.342-3.336-.532 0-1.065.32-1.349.781-.78 1.384-.425 4.4.923 7.381a60.277 60.277 0 0 1-1.703 4.507c-.568 1.349-1.207 2.733-1.917 4.01C2.834 18.53.314 20.34.03 21.758c-.106.533.071 1.03.462 1.42.142.107.639.533 1.49.533 2.59 0 5.323-4.188 6.707-6.707 1.065-.355 2.13-.71 3.194-.994a34.963 34.963 0 0 1 3.407-.745c2.732 2.448 5.145 2.839 6.352 2.839 1.49 0 2.023-.604 2.2-1.1.32-.64.106-1.349-.213-1.704zm-1.42 1.03c-.107.532-.64.887-1.384.887-.213 0-.39-.036-.604-.071-1.348-.32-2.626-.994-3.903-2.059a17.717 17.717 0 0 1 2.98-.248c.746 0 1.385.035 1.81.142.497.106 1.278.426 1.1 1.348zm-7.524-1.668a38.01 38.01 0 0 0-2.945.674 39.68 39.68 0 0 0-2.52.745 40.05 40.05 0 0 0 1.207-2.555c.426-.994.78-2.023 1.136-2.981.354.603.745 1.207 1.135 1.739a50.127 50.127 0 0 0 1.987 2.378zM10.038 1.46a.768.768 0 0 1 .674-.425c.745 0 .887.851.887 1.526 0 1.135-.355 2.874-.958 4.861-1.03-2.768-1.1-5.074-.603-5.962zM6.134 17.997c-1.81 2.981-3.549 4.826-4.613 4.826a.872.872 0 0 1-.532-.177c-.213-.213-.32-.461-.249-.745.213-1.065 2.271-2.555 5.394-3.904Z" /></svg>
-                          </button>
-
-                        </div>
-
-                        <div class="mb-0 font-bold capitalize  m-2 ">
-                          <button className="w-10" onClick={() => exportToExcel(categoriaProds)} >
-                            <div className="hidden">exel</div>
-                            <svg role="img" viewBox="0 0 24 24" fill="#217346" xmlns="http://www.w3.org/2000/svg"><title>Microsoft Excel</title><path d="M23 1.5q.41 0 .7.3.3.29.3.7v19q0 .41-.3.7-.29.3-.7.3H7q-.41 0-.7-.3-.3-.29-.3-.7V18H1q-.41 0-.7-.3-.3-.29-.3-.7V7q0-.41.3-.7Q.58 6 1 6h5V2.5q0-.41.3-.7.29-.3.7-.3zM6 13.28l1.42 2.66h2.14l-2.38-3.87 2.34-3.8H7.46l-1.3 2.4-.05.08-.04.09-.64-1.28-.66-1.29H2.59l2.27 3.82-2.48 3.85h2.16zM14.25 21v-3H7.5v3zm0-4.5v-3.75H12v3.75zm0-5.25V7.5H12v3.75zm0-5.25V3H7.5v3zm8.25 15v-3h-6.75v3zm0-4.5v-3.75h-6.75v3.75zm0-5.25V7.5h-6.75v3.75zm0-5.25V3h-6.75v3Z" /></svg>
-                          </button>
-                        </div>
+                       
                         <div class="mb-0 font-bold capitalize m-2">
 
                           <button type="button" className="" onClick={openModal}>
@@ -537,9 +405,7 @@ const CategoriaProds = () => {
                               </div>
                             </div>
                           </td>
-                          <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
-
-                          </td>
+                      
                           <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                             <p class="mb-0 text-xs leading-tight dark:text-white dark:opacity-80 text-slate-400">{categoriaProd.titulo}</p>
                           </td>
@@ -598,26 +464,8 @@ const CategoriaProds = () => {
                         Siguiente</button>
                     </div>
                     <div>
-
-
                     </div>
-                    <select
-                      className="text-orange-600 ml-2 font-bold inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs uppercase leading-normal shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                      value={itemsPerPage}
-                      onChange={(e) => setItemsPerPage(parseInt(e.target.value))}
-                    >
-                      <option className="as font-semibold " value={1}>  1 col</option>
-                      <option className="as font-semibold " value={5}>  5 col</option>
-                      <option className="as font-semibold" value={10}> 10 col</option>
-                      <option className="as font-semibold" value={50}> 50 col</option>
-                      <option className="as font-semibold" value={100}>100 col</option>
-                      <option className="as font-semibold" value={500}>500 col</option>
-                    </select>
-
                   </div>
-
-
-
                 </div>
               </div>
             </div>
