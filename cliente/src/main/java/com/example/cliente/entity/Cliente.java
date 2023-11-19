@@ -14,11 +14,13 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nombre;
-    private String dni;
-    private String celular;
-    private String telefono;
     private String apellidopaterno;
     private String apellidomaterno;
+    private String dni;
+    private boolean sexo;
+    private String telefono;
+    private String celular;
+    private String direccion;
     private LocalDateTime created_at = LocalDateTime.now();
     private LocalDateTime updated_at = LocalDateTime.now();
 }

@@ -19,6 +19,10 @@ public class Producto {
     private Integer id;
     private String nombre;
     private Double costo;
+    private String descripcion;
+    private Double stock;
+    private Double precio;
+    private String estado;
     private Integer categoriaId;
     private LocalDateTime created_at = LocalDateTime.now();
     private LocalDateTime updated_at = LocalDateTime.now();
