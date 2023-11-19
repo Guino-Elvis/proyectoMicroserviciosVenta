@@ -34,8 +34,8 @@ spring:
           uri: lb://producto-service
           predicates:
             - Path=/producto/**
-          # filters:
-          #   - AuthFilter
+          filters:
+            - AuthFilter
         - id: venta-service
           uri: lb://venta-service
           predicates:
@@ -46,8 +46,8 @@ spring:
           uri: lb://categoria-service
           predicates:
             - Path=/categoria/** 
-          # filters:
-          #   - AuthFilter       
+          filters:
+            - AuthFilter       
         - id: auth-service
           uri: lb://auth-service
           predicates:
