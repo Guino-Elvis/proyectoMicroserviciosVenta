@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import 'jspdf-autotable';
 import Modal from "../component/Modal";
 import AppLayout from "../component/admin/AppLayout";
 import css from '../styles/add.css';

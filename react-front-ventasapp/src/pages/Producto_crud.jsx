@@ -2,6 +2,7 @@ import axios from "axios";
 
 import { useState, useEffect } from "react";
 import AppLayout from '../component/admin/AppLayout';
+import { saveFile, deleteFile } from "../firebase/firebase";// Importa los métodos de Firebase
 import alumnoa from '../styles/add.css';
 import Modal from "../component/Modal";
 import SelectCategoria from "../component/Select_categoria";
@@ -57,16 +58,17 @@ const Cproductos = () => {
         cantidadStock: "",
         disponible: "",
         proveedor: "",
+        foto: "",
         categoriaId: "",
     });
 
     const getCproductos = () => {
         axios
-            .get(`${API_URL}/producto`,{
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
+            .get(`${API_URL}/producto`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            })
             .then((response) => {
                 const sortedCproductos = response.data.sort();
                 setCproductos(sortedCproductos.reverse());
@@ -78,11 +80,11 @@ const Cproductos = () => {
 
                 // Obtener los nombres de los categorias para cada cproducto
                 const categoriaPromises = filtered.map((cproducto) => {
-                    return axios.get(`${API_URL}/categoria/${cproducto.categoriaId}`,{
+                    return axios.get(`${API_URL}/categoria/${cproducto.categoriaId}`, {
                         headers: {
-                          Authorization: `Bearer ${token}`,
+                            Authorization: `Bearer ${token}`,
                         },
-                      });
+                    });
                 });
 
                 // Realizar las solicitudes en paralelo
@@ -118,6 +120,7 @@ const Cproductos = () => {
             cantidadStock: cproducto.cantidadStock,
             disponible: cproducto.disponible,
             proveedor: cproducto.proveedor,
+            foto: cproducto.foto,
             categoriaId: cproducto.categoriaId,
 
         });
@@ -142,7 +145,8 @@ const Cproductos = () => {
         }
 
         try {
-
+            // Subir la foto a Firebase Storage
+            const fotoUrl = await saveFile(selectedFile);
             // Crear el nuevo cproducto con la URL de la foto
             const nuevoCproducto = {
                 nombre: cproductoEditado.nombre,
@@ -152,17 +156,18 @@ const Cproductos = () => {
                 codigoBarras: cproductoEditado.codigoBarras,
                 cantidadStock: cproductoEditado.cantidadStock,
                 disponible: cproductoEditado.disponible,
+                foto: fotoUrl,
                 proveedor: cproductoEditado.proveedor,
                 categoriaId: cproductoEditado.categoriaId,
             };
 
             // Realizar la solicitud POST para crear el cproducto utilizando axios
             axios
-                .post(`${API_URL}/producto`, nuevoCproducto,{
+                .post(`${API_URL}/producto`, nuevoCproducto, {
                     headers: {
-                      Authorization: `Bearer ${token}`,
+                        Authorization: `Bearer ${token}`,
                     },
-                  })
+                })
                 .then((response) => {
                     setCproductoEditado({
                         id: null,
@@ -174,6 +179,7 @@ const Cproductos = () => {
                         cantidadStock: "",
                         disponible: "",
                         proveedor: "",
+                        foto: "",
                         categoriaId: "",
                     });
                     getCproductos();
@@ -192,7 +198,11 @@ const Cproductos = () => {
         event.preventDefault();
 
         try {
-
+            // Subir la foto a Firebase Storage si se seleccionó una nueva imagen
+            let fotoUrl = cproductoEditado.foto;
+            if (selectedFile) {
+                fotoUrl = await saveFile(selectedFile);
+            }
             // Actualizar los datos del cproducto, incluyendo la URL de la foto
             const cproductoActualizado = {
                 id: cproductoEditado.id,
@@ -204,17 +214,18 @@ const Cproductos = () => {
                 cantidadStock: cproductoEditado.cantidadStock,
                 disponible: cproductoEditado.disponible,
                 proveedor: cproductoEditado.proveedor,
+                foto: fotoUrl,
                 categoriaId: cproductoEditado.categoriaId,
             };
 
             // Realizar la solicitud PUT para actualizar el cproducto
             const response = await axios.put(
                 `${API_URL}/producto`,
-                cproductoActualizado,{
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                    },
-                  }
+                cproductoActualizado, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            }
             );
 
             // Actualizar la lista de cproductos
@@ -230,6 +241,7 @@ const Cproductos = () => {
                 cantidadStock: "",
                 disponible: "",
                 proveedor: "",
+                foto: "",
                 categoriaId: "",
             });
         } catch (error) {
@@ -237,15 +249,16 @@ const Cproductos = () => {
         }
     };
 
-    const eliminarCproducto = async (id) => {
+    const eliminarCproducto = async (id, foto) => {
         try {
-
+            // Eliminar la foto de Firebase Storage
+            await deleteFile(`producto/${foto}`);
             // Realizar la solicitud DELETE para eliminar el cproducto
-            const response = await axios.delete(`${API_URL}/producto/${id}`,{
+            const response = await axios.delete(`${API_URL}/producto/${id}`, {
                 headers: {
-                  Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${token}`,
                 },
-              });
+            });
 
             // Actualizar la lista de cproductos
             getCproductos();
@@ -287,7 +300,36 @@ const Cproductos = () => {
                                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                             />
                         </div>
-
+                        <div className="mt-4">
+                            <label className="block">Foto</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(event) => setSelectedFile(event.target.files[0])}
+                                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                            />
+                            <div className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
+                                {selectedFile ? (
+                                    <div className="flex items-center mt-2">
+                                        <img
+                                            src={URL.createObjectURL(selectedFile)}
+                                            alt="Nueva foto"
+                                            className="w-40 h-40 rounded mr-2"
+                                        />
+                                        <span className="text-gray-600">Nueva foto seleccionada</span>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center mt-2">
+                                        <img
+                                            src={cproductoEditado.foto}
+                                            alt="Foto actual"
+                                            className="w-40 h-40 rounded mr-2"
+                                        />
+                                        <span className="text-gray-600">Foto actual</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                         <div className="w-full">
                             <label className="block">Costo</label>
                             <input
@@ -304,7 +346,7 @@ const Cproductos = () => {
                             />
                         </div>
 
-                        
+
                         <div className="w-full">
                             <label className="block">tasaIGV</label>
                             <input
@@ -503,6 +545,7 @@ const Cproductos = () => {
                                         <thead class="align-bottom">
                                             <tr>
                                                 <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">ID</th>
+                                                <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">Foto</th>
                                                 <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">Nombre</th>
                                                 <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">categoria</th>
                                                 <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">Costo</th>
@@ -523,7 +566,16 @@ const Cproductos = () => {
                                                             </div>
                                                         </div>
                                                     </td>
-
+                                                    <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                                                        <div class="flex px-2 py-1">
+                                                            <div>
+                                                                <img
+                                                                    src={cproducto.foto}
+                                                                    className="inline-flex items-center justify-center mr-4 text-sm text-white transition-all duration-200 ease-in-out h-9 w-9 rounded-xl"
+                                                                    alt="user1"
+                                                                />                            </div>
+                                                        </div>
+                                                    </td>
                                                     <td class="pl-4 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                                                         <div class="flex px-2 py-1">
                                                             <div class="flex flex-col justify-center">

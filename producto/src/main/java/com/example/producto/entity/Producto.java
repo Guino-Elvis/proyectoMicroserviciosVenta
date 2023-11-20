@@ -26,6 +26,7 @@ public class Producto {
     private int cantidadStock;
     private String disponible;
     private String proveedor;
+    private String foto;
     private LocalDateTime created_at = LocalDateTime.now();
     private LocalDateTime updated_at = LocalDateTime.now();
 
