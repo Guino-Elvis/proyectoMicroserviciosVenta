@@ -51,10 +51,12 @@ const Cproductos = () => {
         id: null,
         nombre: "",
         costo: "",
+        tasaIGV: "",
         descripcion: "",
-        stock: "",
-        precio: "",
-        estado: "",
+        codigoBarras: "",
+        cantidadStock: "",
+        disponible: "",
+        proveedor: "",
         categoriaId: "",
     });
 
@@ -110,10 +112,12 @@ const Cproductos = () => {
             id: cproducto.id,
             nombre: cproducto.nombre,
             costo: cproducto.costo,
+            tasaIGV: cproducto.tasaIGV,
             descripcion: cproducto.descripcion,
-            stock: cproducto.stock,
-            precio: cproducto.precio,
-            estado: cproducto.estado,
+            codigoBarras: cproducto.codigoBarras,
+            cantidadStock: cproducto.cantidadStock,
+            disponible: cproducto.disponible,
+            proveedor: cproducto.proveedor,
             categoriaId: cproducto.categoriaId,
 
         });
@@ -125,10 +129,12 @@ const Cproductos = () => {
         if (
             !cproductoEditado.nombre.trim() ||
             !cproductoEditado.costo.trim() ||
+            !cproductoEditado.tasaIGV.trim() ||
             !cproductoEditado.descripcion.trim() ||
-            !cproductoEditado.stock.trim() ||
-            !cproductoEditado.precio.trim() ||
-            !cproductoEditado.estado.trim() ||
+            !cproductoEditado.codigoBarras.trim() ||
+            !cproductoEditado.cantidadStock.trim() ||
+            !cproductoEditado.disponible.trim() ||
+            !cproductoEditado.proveedor.trim() ||
             !cproductoEditado.categoriaId.trim()
 
         ) {
@@ -141,10 +147,12 @@ const Cproductos = () => {
             const nuevoCproducto = {
                 nombre: cproductoEditado.nombre,
                 costo: cproductoEditado.costo,
+                tasaIGV: cproductoEditado.tasaIGV,
                 descripcion: cproductoEditado.descripcion,
-                stock: cproductoEditado.stock,
-                precio: cproductoEditado.precio,
-                estado: cproductoEditado.estado,
+                codigoBarras: cproductoEditado.codigoBarras,
+                cantidadStock: cproductoEditado.cantidadStock,
+                disponible: cproductoEditado.disponible,
+                proveedor: cproductoEditado.proveedor,
                 categoriaId: cproductoEditado.categoriaId,
             };
 
@@ -160,10 +168,12 @@ const Cproductos = () => {
                         id: null,
                         nombre: "",
                         costo: "",
+                        tasaIGV: "",
                         descripcion: "",
-                        stock: "",
-                        precio: "",
-                        estado: "",
+                        codigoBarras: "",
+                        cantidadStock: "",
+                        disponible: "",
+                        proveedor: "",
                         categoriaId: "",
                     });
                     getCproductos();
@@ -188,10 +198,12 @@ const Cproductos = () => {
                 id: cproductoEditado.id,
                 nombre: cproductoEditado.nombre,
                 costo: cproductoEditado.costo,
+                tasaIGV: cproductoEditado.tasaIGV,
                 descripcion: cproductoEditado.descripcion,
-                stock: cproductoEditado.stock,
-                precio: cproductoEditado.precio,
-                estado: cproductoEditado.estado,
+                codigoBarras: cproductoEditado.codigoBarras,
+                cantidadStock: cproductoEditado.cantidadStock,
+                disponible: cproductoEditado.disponible,
+                proveedor: cproductoEditado.proveedor,
                 categoriaId: cproductoEditado.categoriaId,
             };
 
@@ -212,10 +224,12 @@ const Cproductos = () => {
                 id: null,
                 nombre: "",
                 costo: "",
+                tasaIGV: "",
                 descripcion: "",
-                stock: "",
-                precio: "",
-                estado: "",
+                codigoBarras: "",
+                cantidadStock: "",
+                disponible: "",
+                proveedor: "",
                 categoriaId: "",
             });
         } catch (error) {
@@ -290,6 +304,23 @@ const Cproductos = () => {
                             />
                         </div>
 
+                        
+                        <div className="w-full">
+                            <label className="block">tasaIGV</label>
+                            <input
+                                value={cproductoEditado.tasaIGV}
+                                onChange={(event) =>
+                                    setCproductoEditado({
+                                        ...cproductoEditado,
+                                        tasaIGV: event.target.value,
+                                    })
+                                }
+                                type="number"
+                                placeholder="tasaIGV"
+                                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                            />
+                        </div>
+
                         <div className="w-full">
                             <label className="block">descripcion</label>
                             <input
@@ -307,49 +338,65 @@ const Cproductos = () => {
                         </div>
 
                         <div className="w-full">
-                            <label className="block">stock</label>
+                            <label className="block">codigoBarras</label>
                             <input
-                                value={cproductoEditado.stock}
+                                value={cproductoEditado.codigoBarras}
                                 onChange={(event) =>
                                     setCproductoEditado({
                                         ...cproductoEditado,
-                                        stock: event.target.value,
-                                    })
-                                }
-                                type="number"
-                                placeholder="stock"
-                                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-                            />
-                        </div>
-
-                        <div className="w-full">
-                            <label className="block">precio</label>
-                            <input
-                                value={cproductoEditado.precio}
-                                onChange={(event) =>
-                                    setCproductoEditado({
-                                        ...cproductoEditado,
-                                        precio: event.target.value,
-                                    })
-                                }
-                                type="number"
-                                placeholder="precio"
-                                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
-                            />
-                        </div>
-
-                        <div className="w-full">
-                            <label className="block">estado</label>
-                            <input
-                                value={cproductoEditado.estado}
-                                onChange={(event) =>
-                                    setCproductoEditado({
-                                        ...cproductoEditado,
-                                        estado: event.target.value,
+                                        codigoBarras: event.target.value,
                                     })
                                 }
                                 type="text"
-                                placeholder="estado"
+                                placeholder="codigoBarras"
+                                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                            />
+                        </div>
+
+                        <div className="w-full">
+                            <label className="block">cantidadStock</label>
+                            <input
+                                value={cproductoEditado.cantidadStock}
+                                onChange={(event) =>
+                                    setCproductoEditado({
+                                        ...cproductoEditado,
+                                        cantidadStock: event.target.value,
+                                    })
+                                }
+                                type="number"
+                                placeholder="cantidadStock"
+                                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                            />
+                        </div>
+
+                        <div className="w-full">
+                            <label className="block">disponible</label>
+                            <input
+                                value={cproductoEditado.disponible}
+                                onChange={(event) =>
+                                    setCproductoEditado({
+                                        ...cproductoEditado,
+                                        disponible: event.target.value,
+                                    })
+                                }
+                                type="text"
+                                placeholder="disponible"
+                                className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
+                            />
+                        </div>
+
+                        <div className="w-full">
+                            <label className="block">proveedor</label>
+                            <input
+                                value={cproductoEditado.proveedor}
+                                onChange={(event) =>
+                                    setCproductoEditado({
+                                        ...cproductoEditado,
+                                        proveedor: event.target.value,
+                                    })
+                                }
+                                type="text"
+                                placeholder="proveedor"
                                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                             />
                         </div>

@@ -19,11 +19,13 @@ public class Producto {
     private Integer id;
     private String nombre;
     private Double costo;
-    private String descripcion;
-    private Double stock;
-    private Double precio;
-    private String estado;
     private Integer categoriaId;
+    private double tasaIGV;
+    private String descripcion;
+    private String codigoBarras;
+    private int cantidadStock;
+    private String disponible;
+    private String proveedor;
     private LocalDateTime created_at = LocalDateTime.now();
     private LocalDateTime updated_at = LocalDateTime.now();
 

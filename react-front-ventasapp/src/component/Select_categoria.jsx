@@ -38,7 +38,7 @@ function SelectCategoria({ onChange }) {
       <option value="">Seleccionar Categoria</option>
       {categorias.map((categoria) => (
         <option key={categoria.id} value={categoria.id}>
-          {categoria.nombre}
+          {categoria.titulo}
         </option>
       ))}
     </select>

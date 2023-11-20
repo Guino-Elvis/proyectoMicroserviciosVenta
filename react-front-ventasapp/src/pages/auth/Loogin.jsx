@@ -19,19 +19,19 @@ const Login = () => {
         password: password,
       });
 
-      // Procesar la respuesta del backend, por ejemplo, guardar el token en el almacenamiento local
+   
       const token = response.data.token;
       console.log("Guardado exitoso");
       console.log("token:", token);
 
-      // Almacenar el token en el almacenamiento local
+ 
       localStorage.setItem("token", token);
 
-      // Redirigir a la página principal o hacer alguna otra acción
+ 
       navigate("/dashboard");
     } catch (error) {
       console.error(error);
-      // Mostrar un mensaje de error o realizar alguna otra acción
+    
     }
   };
 
@@ -44,23 +44,22 @@ const Login = () => {
         password: password,
         confirmPassword: confirmPassword,
       });
-  
-      // Procesar la respuesta del backend, por ejemplo, mostrar un mensaje de éxito
+     
       console.log("Registro exitoso");
       console.log(response);
-      // ...
-  
-      // Llamar a la función handleLogin para iniciar sesión automáticamente
+   
       await handleLogin(e);
-  
-      // Cambiar al modo de inicio de sesión después del registro
+
       setRegisterMode(false);
     } catch (error) {
       console.error(error);
-      // Mostrar un mensaje de error o realizar alguna otra acción
     }
   };
 
+
+
+
+  ///////////estiloo   de login  
   useEffect(() => {
     const iniciarSesionBtn = document.getElementById("btn__iniciar-sesion");
     const registerBtn = document.getElementById("btn__registrarse");
@@ -139,7 +138,7 @@ const Login = () => {
       caja_trasera_login.style.opacity = "1";
     }
   };
-
+ ///////////end  estiloo   de login  
   return (
     <div className="bodyy">
       <div className="mainn">
@@ -235,6 +234,8 @@ const Login = () => {
         </div>
       </div>
     </div>
+
+  
   );
 };
 

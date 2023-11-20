@@ -14,10 +14,10 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String titulo;
-    private String nombre;
     private String descripccion;
-    private String modelo;
-    private String marca;
+    private int orden;
+    private String etiqueta;
+    private String color;
     private LocalDateTime created_at = LocalDateTime.now();
     private LocalDateTime updated_at = LocalDateTime.now();
 }

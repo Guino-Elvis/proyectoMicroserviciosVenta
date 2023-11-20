@@ -47,11 +47,10 @@ const CategoriaProds = () => {
   const [categoriaProdEditado, setCategoriaProdEditado] = useState({
     id: null,
     titulo: "",
-    nombre: "",
     descripccion: "",
-    modelo: "",
-    marca: "",
-
+    orden: "",
+    etiqueta: "",
+    color: "",
   });
 
   const getCategoriaProds = () => {
@@ -65,7 +64,7 @@ const CategoriaProds = () => {
         const sortedCategoriaProds = response.data.sort();
         setCategoriaProds(sortedCategoriaProds.reverse());
         const filtered = response.data.filter((categoriaProd) => {
-          const tituloCompleto = `${categoriaProd.titulo} ${categoriaProd.nombre}${categoriaProd.modelo}${categoriaProd.marca}`;
+          const tituloCompleto = `${categoriaProd.titulo} ${categoriaProd.orden}${categoriaProd.etiqueta}${categoriaProd.color}`;
           return tituloCompleto.toLowerCase().includes(searchTerm.toLowerCase());
         });
 
@@ -83,10 +82,10 @@ const CategoriaProds = () => {
     setCategoriaProdEditado({
       id: categoriaProd.id,
       titulo: categoriaProd.titulo,
-      nombre: categoriaProd.nombre,
       descripccion: categoriaProd.descripccion,
-      modelo: categoriaProd.modelo,
-      marca: categoriaProd.marca,
+      orden: categoriaProd.orden,
+      etiqueta: categoriaProd.etiqueta,
+      color: categoriaProd.color,
     });
     openModal()
   }
@@ -95,10 +94,10 @@ const CategoriaProds = () => {
     event.preventDefault();
     if (
       !categoriaProdEditado.titulo.trim() ||
-      !categoriaProdEditado.nombre.trim() ||
+      !categoriaProdEditado.orden.trim() ||
       !categoriaProdEditado.descripccion.trim() ||
-      !categoriaProdEditado.modelo.trim() ||
-      !categoriaProdEditado.marca.trim()
+      !categoriaProdEditado.etiqueta.trim() ||
+      !categoriaProdEditado.color.trim()
     ) {
       return;
     }
@@ -107,10 +106,10 @@ const CategoriaProds = () => {
 
       const nuevoCategoriaProd = {
         titulo: categoriaProdEditado.titulo,
-        nombre: categoriaProdEditado.nombre,
+        orden: categoriaProdEditado.orden,
         descripccion: categoriaProdEditado.descripccion,
-        modelo: categoriaProdEditado.modelo,
-        marca: categoriaProdEditado.marca,
+        etiqueta: categoriaProdEditado.etiqueta,
+        color: categoriaProdEditado.color,
       };
 
 
@@ -124,10 +123,10 @@ const CategoriaProds = () => {
           setCategoriaProdEditado({
             id: null,
             titulo: "",
-            nombre: "",
+            orden: "",
             descripccion: "",
-            modelo: "",
-            marca: "",
+            etiqueta: "",
+            color: "",
 
           });
           getCategoriaProds();
@@ -151,10 +150,10 @@ const CategoriaProds = () => {
       const categoriaProdActualizado = {
         id: categoriaProdEditado.id,
         titulo: categoriaProdEditado.titulo,
-        nombre: categoriaProdEditado.nombre,
+        orden: categoriaProdEditado.orden,
         descripccion: categoriaProdEditado.descripccion,
-        modelo: categoriaProdEditado.modelo,
-        marca: categoriaProdEditado.marca,
+        etiqueta: categoriaProdEditado.etiqueta,
+        color: categoriaProdEditado.color,
       };
 
       // Realizar la solicitud PUT para actualizar el categoriaProd
@@ -173,10 +172,10 @@ const CategoriaProds = () => {
       setCategoriaProdEditado({
         id: null,
         titulo: "",
-        nombre: "",
+        orden: "",
         descripccion: "",
-        modelo: "",
-        marca: "",
+        etiqueta: "",
+        color: "",
 
       });
     } catch (error) {
@@ -236,17 +235,17 @@ const CategoriaProds = () => {
             </div>
 
             <div className="ml-1 w-full">
-              <label className="block">Nombre</label>
+              <label className="block">orden</label>
               <input
-                value={categoriaProdEditado.nombre}
+                value={categoriaProdEditado.orden}
                 onChange={(event) =>
                   setCategoriaProdEditado({
                     ...categoriaProdEditado,
-                    nombre: event.target.value,
+                    orden: event.target.value,
                   })
                 }
-                type="text"
-                placeholder="nombre"
+                type="number"
+                placeholder="orden"
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
               />
             </div>
@@ -266,32 +265,32 @@ const CategoriaProds = () => {
               />
             </div>
             <div className="ml-1 w-full">
-              <label className="block">Modelo</label>
+              <label className="block">etiqueta</label>
               <input
-                value={categoriaProdEditado.modelo}
+                value={categoriaProdEditado.etiqueta}
                 onChange={(event) =>
                   setCategoriaProdEditado({
                     ...categoriaProdEditado,
-                    modelo: event.target.value,
+                    etiqueta: event.target.value,
                   })
                 }
                 type="text"
-                placeholder="modelo"
+                placeholder="etiqueta"
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
               />
             </div>
             <div className="ml-1 w-full">
-              <label className="block">Marca</label>
+              <label className="block">color</label>
               <input
-                value={categoriaProdEditado.marca}
+                value={categoriaProdEditado.color}
                 onChange={(event) =>
                   setCategoriaProdEditado({
                     ...categoriaProdEditado,
-                    marca: event.target.value,
+                    color: event.target.value,
                   })
                 }
                 type="text"
-                placeholder="marca"
+                placeholder="color"
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
               />
             </div>
@@ -388,6 +387,7 @@ const CategoriaProds = () => {
                         <th class="px-6 py-3 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">ID</th>
                         <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">Titulo</th>
                         <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">Descripccion</th>
+                        <th class="px-6 py-3 pl-2 font-bold text-left uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">Orden</th>
                         <th class="px-6 py-3 pl-2 font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">Creado</th>
                         <th class="px-6 py-3  font-bold text-center uppercase align-middle bg-transparent border-b border-collapse shadow-none dark:border-white/40 dark:text-white text-xxs border-b-solid tracking-none whitespace-nowrap text-slate-400  ">Actualizado</th>
                         <th class="px-6 py-3  font-semibold capitalize align-middle bg-transparent border-b border-collapse border-solid shadow-none dark:border-white/40 dark:text-white tracking-none whitespace-nowrap text-slate-400  "></th>
@@ -411,6 +411,9 @@ const CategoriaProds = () => {
                           </td>
                           <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                             <p class="mb-0 text-xs leading-tight dark:text-white dark:opacity-80 text-slate-400">{categoriaProd.descripccion}</p>
+                          </td>
+                          <td class="p-2 align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
+                            <p class="mb-0 text-xs leading-tight dark:text-white dark:opacity-80 text-slate-400">{categoriaProd.orden}</p>
                           </td>
                           <td class="p-2 text-center align-middle bg-transparent border-b dark:border-white/40 whitespace-nowrap shadow-transparent">
                             <span class="text-xs font-semibold leading-tight dark:text-white dark:opacity-80 text-slate-400">{categoriaProd.created_at}</span>
